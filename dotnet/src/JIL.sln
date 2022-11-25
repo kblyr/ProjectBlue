@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL", "JIL\JIL.csproj", "{4C05D15F-4C70-42D9-8337-53929F58BC39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL.EFCore", "EFCore\JIL.EFCore.csproj", "{C12169F1-1213-46AF-9AD8-66AB7FEDD330}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{4C05D15F-4C70-42D9-8337-53929F58BC39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C05D15F-4C70-42D9-8337-53929F58BC39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C05D15F-4C70-42D9-8337-53929F58BC39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C12169F1-1213-46AF-9AD8-66AB7FEDD330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C12169F1-1213-46AF-9AD8-66AB7FEDD330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C12169F1-1213-46AF-9AD8-66AB7FEDD330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C12169F1-1213-46AF-9AD8-66AB7FEDD330}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
