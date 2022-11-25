@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL.Accounts", "Accounts\JIL.Accounts.csproj", "{557876F9-B051-4471-82F2-80CD3398F119}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL", "JIL\JIL.csproj", "{859F5257-8D98-4F88-90C5-42AB2E978238}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{557876F9-B051-4471-82F2-80CD3398F119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{557876F9-B051-4471-82F2-80CD3398F119}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{557876F9-B051-4471-82F2-80CD3398F119}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{557876F9-B051-4471-82F2-80CD3398F119}.Release|Any CPU.Build.0 = Release|Any CPU
+		{859F5257-8D98-4F88-90C5-42AB2E978238}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{859F5257-8D98-4F88-90C5-42AB2E978238}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{859F5257-8D98-4F88-90C5-42AB2E978238}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{859F5257-8D98-4F88-90C5-42AB2E978238}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
