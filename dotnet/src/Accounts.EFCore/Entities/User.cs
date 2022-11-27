@@ -8,6 +8,7 @@ public record User
     public required string Username { get; set; }
     public required string HashedPassword { get; set; }
     public required string PasswordSalt { get; set; }
+    public short StatusId { get; set; }
 
     public required string FullName { get; set; }
 
@@ -16,4 +17,12 @@ public record User
     public DateTimeOffset? InsertedOn { get; set; }
     public int DeletedById { get; set; }
     public DateTimeOffset? DeletedOn { get; set; }
+
+    public required UserStatus Status { get; set; }
+}
+
+public record UserStatus
+{
+    public short Id { get; set; }
+    public required string Name { get; set; }
 }
