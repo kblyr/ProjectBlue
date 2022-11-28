@@ -13,7 +13,7 @@ public record User
     public required string FullName { get; set; }
 
     public bool IsDeleted { get; set; }
-    public int InsertedById { get; set; }
+    public int? InsertedById { get; set; }
     public DateTimeOffset? InsertedOn { get; set; }
     public int DeletedById { get; set; }
     public DateTimeOffset? DeletedOn { get; set; }
