@@ -111,3 +111,45 @@ sealed class UserPasswordHashAlgorithm : IUserPasswordHashAlgorithm
         return Convert.ToBase64String(data);
     }
 }
+
+sealed class UserPasswordF2BHashAlgorithm : IUserPasswordF2BHashAlgorithm
+{
+    readonly IUserPasswordHashAlgorithm _baseAlgorithm;
+    readonly IUserPasswordF2BDecryptor _decryptor;
+
+    public UserPasswordF2BHashAlgorithm(IUserPasswordHashAlgorithm baseAlgorithm, IUserPasswordF2BDecryptor decryptor)
+    {
+        _baseAlgorithm = baseAlgorithm;
+        _decryptor = decryptor;
+    }
+
+    public UserPasswordHashAlgorithmComputeResult Compute(string cipherPassword)
+    {
+        return _baseAlgorithm.Compute(_decryptor.Decrypt(cipherPassword));
+    }
+
+    public string Compute(string cipherPassword, string salt)
+    {
+        return _baseAlgorithm.Compute(_decryptor.Decrypt(cipherPassword), salt);
+    }
+
+    public async ValueTask<UserPasswordHashAlgorithmComputeResult> ComputeAsync(string cipherPassword, CancellationToken cancellationToken = default)
+    {
+        return _baseAlgorithm.Compute(await _decryptor.DecryptAsync(cipherPassword, cancellationToken));
+    }
+
+    public async ValueTask<string> ComputeAsync(string cipherPassword, string salt, CancellationToken cancellationToken = default)
+    {
+        return _baseAlgorithm.Compute(await _decryptor.DecryptAsync(cipherPassword, cancellationToken), salt);
+    }
+
+    public bool Verify(string hashedPassword, string cipherPassword, string salt)
+    {
+        return _baseAlgorithm.Verify(hashedPassword, _decryptor.Decrypt(cipherPassword), salt);
+    }
+
+    public async ValueTask<bool> VerifyAsync(string hashedPassword, string cipherPassword, string salt, CancellationToken cancellationToken = default)
+    {
+        return _baseAlgorithm.Verify(hashedPassword, await _decryptor.DecryptAsync(cipherPassword, cancellationToken), salt);
+    }
+}
