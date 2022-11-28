@@ -1,6 +1,8 @@
+using JIL.Accounts.Utilities;
+
 namespace JIL.Accounts.Contracts;
 
-public sealed record CreateUserCommand : IRequest
+public sealed record CreateUserCommand : IRequest, IUserFullNameSource
 {
     public required string FirstName { get; init; }
     public required string LastName { get; init; }
