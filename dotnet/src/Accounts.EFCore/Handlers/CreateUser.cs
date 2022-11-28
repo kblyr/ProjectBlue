@@ -2,6 +2,7 @@ using JIL.Accounts.Lookups;
 using JIL.Accounts.Security;
 using JIL.Accounts.Utilities;
 using JIL.Auditing;
+using JIL.Authorization;
 using MapsterMapper;
 
 namespace JIL.Accounts.Handlers;
@@ -14,8 +15,13 @@ sealed class CreateUserHandler : IRequestHandler<CreateUserCommand>
     readonly IUserPasswordF2BHashAlgorithm _passwordHashAlgorithm;
     readonly IOptions<UserStatusesLookup> _statuses;
     readonly IUserFullNameBuilder _fullNameBuilder;
+    readonly IRoleVerifier _roleVerifier;
+    readonly IOptions<RolesLookup> _roles;
+    readonly MediatR.IMediator _mediator;
+    readonly IOptions<PermissionsLookup> _permissions;
+    readonly IPermissionVerifier _permissionsVerifier;
 
-    public CreateUserHandler(IDbContextFactory<AccountsDbContext> contextFactory, IMapper mapper, ICurrentAuditInfoProvider auditInfoProvider, IUserPasswordF2BHashAlgorithm passwordHashAlgorithm, IOptions<UserStatusesLookup> statuses, IUserFullNameBuilder fullNameBuilder)
+    public CreateUserHandler(IDbContextFactory<AccountsDbContext> contextFactory, IMapper mapper, ICurrentAuditInfoProvider auditInfoProvider, IUserPasswordF2BHashAlgorithm passwordHashAlgorithm, IOptions<UserStatusesLookup> statuses, IUserFullNameBuilder fullNameBuilder, IRoleVerifier roleVerifier, IOptions<RolesLookup> roles, MediatR.IMediator mediator, IOptions<PermissionsLookup> permissions, IPermissionVerifier permissionsVerifier)
     {
         _contextFactory = contextFactory;
         _mapper = mapper;
@@ -23,6 +29,11 @@ sealed class CreateUserHandler : IRequestHandler<CreateUserCommand>
         _passwordHashAlgorithm = passwordHashAlgorithm;
         _statuses = statuses;
         _fullNameBuilder = fullNameBuilder;
+        _roleVerifier = roleVerifier;
+        _roles = roles;
+        _mediator = mediator;
+        _permissions = permissions;
+        _permissionsVerifier = permissionsVerifier;
     }
 
     public async Task<IResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -37,11 +48,20 @@ sealed class CreateUserHandler : IRequestHandler<CreateUserCommand>
 
         var auditInfo = _auditInfoProvider.Current;
         var statuses = _statuses.Value;
+        var roles = _roles.Value;
+        var permissions = _permissions.Value;
+        var statusId = statuses.Pending;
         var password = await _passwordHashAlgorithm.ComputeAsync(request.CipherPassword, cancellationToken);
+
+        if (await _roleVerifier.Verify(roles.Administrator, cancellationToken) || await _permissionsVerifier.Verify(permissions.ApproveUser, cancellationToken))
+        {
+            statusId = statuses.Active;
+        }
+
         var user = _mapper.Map<CreateUserCommand, User>(request) with 
         {
             FullName = _fullNameBuilder.Build(request),
-            StatusId = statuses.Pending,
+            StatusId = statusId,
             HashedPassword = password.HashedPassword,
             PasswordSalt = password.Salt,
             IsDeleted = false,
@@ -51,7 +71,7 @@ sealed class CreateUserHandler : IRequestHandler<CreateUserCommand>
         context.Users.Add(user);
         await context.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
-
+        await _mediator.Publish(_mapper.Map<User, UserCreatedEvent>(user), cancellationToken);
         return new CreateUserCommand.Response { Id = user.Id };
     }
 }
