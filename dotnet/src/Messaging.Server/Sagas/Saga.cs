@@ -7,7 +7,16 @@ namespace JIL;
 public abstract class Saga<TInstance> : MassTransitStateMachine<TInstance>
     where TInstance : class, ISagaInstance
 {
+    public Saga()
+    {
+        InstanceState(instance => instance.CurrentState);
+        ConfigureEvents();
+        ConfigureEventActivities();
+    }
 
+    protected virtual void ConfigureEvents() { }
+
+    protected virtual void ConfigureEventActivities() { }
 }
 
 public interface ISagaInstance : SagaStateMachineInstance, ISagaVersion
