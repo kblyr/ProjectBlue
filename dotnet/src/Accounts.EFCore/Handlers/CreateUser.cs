@@ -71,7 +71,14 @@ sealed class CreateUserHandler : IRequestHandler<CreateUserCommand>
         context.Users.Add(user);
         await context.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
-        await _mediator.Publish(_mapper.Map<User, UserCreatedEvent>(user), cancellationToken);
+        await _mediator.Publish(_mapper.Map<User, UserCreatedEvent>(user) with 
+        {
+            CreatedBy = new()
+            {
+                Id = auditInfo.UserId,
+                FullName = auditInfo.Username
+            }
+        }, cancellationToken);
         return new CreateUserCommand.Response { Id = user.Id };
     }
 }

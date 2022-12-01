@@ -2,16 +2,19 @@
 
 using JIL;
 using JIL.Accounts.Lookups;
+using MapsterMapper;
 using MassTransit;
 using Microsoft.Extensions.Options;
 
 public sealed class UserSaga : Saga<UserSaga.Instance>
 {
     readonly UserStatusesLookup _statuses;
+    readonly IMapper _mapper;
 
-    public UserSaga(IOptions<UserStatusesLookup> statuses)
+    public UserSaga(IOptions<UserStatusesLookup> statuses, IMapper mapper)
     {
         _statuses = statuses.Value;
+        _mapper = mapper;
     }
 
     public State Pending { get; private set; }
@@ -37,6 +40,7 @@ public sealed class UserSaga : Saga<UserSaga.Instance>
             Ignore(UserCreated, context => context.Message.StatusId == _statuses.Locked),
             When(UserCreated, context => context.Message.StatusId == _statuses.Pending)
                 .Then(OnUserCreated)
+                .Publish(context => _mapper.Map<UserCreatedEvent, UserActivationRequestCreatedEvent>(context.Message))
                 .TransitionTo(Pending),
             When(UserCreated, context => context.Message.StatusId == _statuses.Active)
                 .Then(OnUserCreated)
