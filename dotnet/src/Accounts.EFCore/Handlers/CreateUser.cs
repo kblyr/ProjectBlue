@@ -65,7 +65,7 @@ sealed class CreateUserHandler : IRequestHandler<CreateUserCommand>
             HashedPassword = password.HashedPassword,
             PasswordSalt = password.Salt,
             IsDeleted = false,
-            InsertedById = auditInfo.UserId,
+            InsertedById = auditInfo.User.Id,
             InsertedOn = auditInfo.Timestamp
         };
         context.Users.Add(user);
@@ -73,11 +73,7 @@ sealed class CreateUserHandler : IRequestHandler<CreateUserCommand>
         await transaction.CommitAsync(cancellationToken);
         await _mediator.Publish(_mapper.Map<User, UserCreatedEvent>(user) with 
         {
-            CreatedBy = new()
-            {
-                Id = auditInfo.UserId,
-                FullName = auditInfo.Username
-            }
+            CreatedBy = _mapper.Map<AuditInfo.UserObj, UserCreatedEvent.UserObj>(auditInfo.User)
         }, cancellationToken);
         return new CreateUserCommand.Response { Id = user.Id };
     }
