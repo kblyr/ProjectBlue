@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL.Messaging.Publisher", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL.Messaging.Server", "Messaging.Server\JIL.Messaging.Server.csproj", "{10B27F29-E118-45B2-8056-215DDEA398AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL.WebAPI", "WebAPI\JIL.WebAPI.csproj", "{33DAA321-D42F-4FDE-B127-989940A65D8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL.WebAPI.Server", "WebAPI.Server\JIL.WebAPI.Server.csproj", "{79898CD8-103F-4090-9C49-098217C725AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +46,13 @@ Global
 		{10B27F29-E118-45B2-8056-215DDEA398AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10B27F29-E118-45B2-8056-215DDEA398AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10B27F29-E118-45B2-8056-215DDEA398AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33DAA321-D42F-4FDE-B127-989940A65D8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33DAA321-D42F-4FDE-B127-989940A65D8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33DAA321-D42F-4FDE-B127-989940A65D8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33DAA321-D42F-4FDE-B127-989940A65D8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79898CD8-103F-4090-9C49-098217C725AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79898CD8-103F-4090-9C49-098217C725AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79898CD8-103F-4090-9C49-098217C725AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79898CD8-103F-4090-9C49-098217C725AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
