@@ -9,6 +9,7 @@ public record User
     public required string HashedPassword { get; set; }
     public required string PasswordSalt { get; set; }
     public short StatusId { get; set; }
+    public bool IsPasswordChangeRequired { get; set; }
 
     public required string FullName { get; set; }
 
