@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace JIL;
 
 public class ApiEndpoint<TApiRequest> : Endpoint<TApiRequest> where TApiRequest : IApiRequest, new()
@@ -34,4 +32,16 @@ public class ApiEndpoint<TApiRequest> : Endpoint<TApiRequest> where TApiRequest 
         HttpContext.Response.Headers.Add(ApiHeaders.ResponseObjectType, registryKeyProvider.Get(definition.ApiResponseType));
         await SendAsync(mapper.Map(response, definition.ResponseType, definition.ApiResponseType), definition.StatusCode, cancellationToken);
     }
+}
+
+public class ApiEndpoint<TApiRequest, TRequest> : ApiEndpoint<TApiRequest>
+    where TApiRequest : IApiRequest, new()
+    where TRequest : IRequest
+{
+    public override async Task HandleAsync(TApiRequest req, CancellationToken ct)
+    {
+        await Send<TRequest>(req, MutateRequest, ct);
+    }
+
+    protected virtual TRequest MutateRequest(TRequest request) => request;
 }
