@@ -3,7 +3,7 @@ namespace JIL.Auditing;
 public sealed record AuditInfo
 {
     public required UserObj User { get; init; }
-    public DateTime Timestamp { get; init; }
+    public DateTimeOffset Timestamp { get; init; }
 
     public sealed record UserObj
     {
