@@ -1,9 +1,5 @@
-using JIL.Accounts.Lookups;
 using JIL.Accounts.Security;
 using JIL.Accounts.Utilities;
-using JIL.Auditing;
-using JIL.Authorization;
-using MapsterMapper;
 
 namespace JIL.Accounts.Handlers;
 
@@ -75,6 +71,7 @@ sealed class CreateUserHandler : IRequestHandler<CreateUserCommand>
         {
             CreatedBy = _mapper.Map<AuditInfo.UserObj, UserCreatedEvent.UserObj>(auditInfo.User)
         }, cancellationToken);
+
         return new CreateUserCommand.Response { Id = user.Id };
     }
 }
