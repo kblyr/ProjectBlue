@@ -34,7 +34,18 @@ builder.Services
     .AddMapster(mappingAssemblies)
     .AddJIL()
     .AddJILWebAPI()
-    .AddJILWebAPIServer(options => options.ResponseTypeMapAssemblies = responseTypeMapAssemblies);
+    .AddJILWebAPIServer(options => {
+        options.Features.ResponseTypeMapRegistry = new()
+        {
+            Assemblies = responseTypeMapAssemblies
+        };
+    })
+    .AddJILAccounts(options => {
+        options.Security = new()
+        {
+            
+        };
+    });
 
 var app = builder.Build();
 
