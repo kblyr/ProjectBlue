@@ -12,7 +12,7 @@ sealed class CurrentAuditInfoProvider : ICurrentAuditInfoProvider
     }
 
     AuditInfo? _current;
-    public AuditInfo Current => _current ??= GetCurrent();
+    public AuditInfo Current => (_current ??= GetCurrent()) with { Timestamp = DateTimeOffset.Now };
 
     AuditInfo GetCurrent()
     {
@@ -33,10 +33,6 @@ sealed class CurrentAuditInfoProvider : ICurrentAuditInfoProvider
             };
         }
 
-        return new AuditInfo
-        {
-            User = user,
-            Timestamp = DateTimeOffset.UtcNow
-        };
+        return new AuditInfo { User = user };
     }
 }
