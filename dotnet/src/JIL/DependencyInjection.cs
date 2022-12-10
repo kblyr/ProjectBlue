@@ -3,28 +3,31 @@ using JIL.Utilities;
 
 namespace JIL;
 
-public sealed class DependencyInjector : DependencyInjectorBase, IDependencyInjector
+public sealed record DependencyOptions
 {
-    DependencyInjector(IServiceCollection services) : base(services) { }
-
-    static DependencyInjector? _instance;
-    public static DependencyInjector GetInstance(IServiceCollection services) => _instance ??= new(services);
+    internal DependencyOptions() { }
+    
+    public Authorization.DependencyOptions? Authorization { get; set; } = new();
+    public Utilities.DependencyOptions? Utilities { get; set; } = new();
 }
 
 public static class DependencyExtensions
 {
-    public static IServiceCollection AddJIL(this IServiceCollection services, InjectDependencies<DependencyInjector> injectDependencies)
+    public static IServiceCollection AddJIL(this IServiceCollection services, Action<DependencyOptions>? configure = null)
     {
-        var injector = DependencyInjector.GetInstance(services);
-        injectDependencies(injector);
-        return services;
-    }
+        var options = new DependencyOptions();
+        configure?.Invoke(options);
 
-    public static IServiceCollection AddJIL(this IServiceCollection services)
-    {
-        return services.AddJIL(injector => injector
-            .AddAuthorization()
-            .AddUtilities()
-        );
+        if (options.Authorization is not null)
+        {
+            services.AddAuthorization(options.Authorization);
+        }
+
+        if (options.Utilities is not null)
+        {
+            services.AddUtilities(options.Utilities);
+        }
+
+        return services;
     }
 }

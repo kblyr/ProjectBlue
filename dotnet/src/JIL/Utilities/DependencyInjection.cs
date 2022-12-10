@@ -1,39 +1,36 @@
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace JIL.Utilities;
 
-public sealed class DependencyInjector : DependencyInjectorBase, IDependencyInjector
+public sealed record DependencyOptions
 {
-    DependencyInjector(IServiceCollection services) : base(services) { }
-    
-    static DependencyInjector? _instance;
-    public static DependencyInjector GetInstance(JIL.DependencyInjector parent) => _instance ??= new(parent.Services);
+    internal DependencyOptions() { }
+
+    public FeaturesObj Features { get; } = new();
+
+    public sealed record FeaturesObj
+    {
+        internal FeaturesObj() { }
+
+        public bool CurrentTimestampProvider { get; set; } = true;
+        public bool RandomStringGenerator { get; set; } = true;
+    }
 }
 
-public static class DependencyExtensions
+static class DependencyExtensions
 {
-    public static JIL.DependencyInjector AddUtilities(this JIL.DependencyInjector parentInjector, InjectDependencies<DependencyInjector> injectDependencies)
+    public static IServiceCollection AddUtilities(this IServiceCollection services, DependencyOptions options)
     {
-        var injector = DependencyInjector.GetInstance(parentInjector);
-        injectDependencies(injector);
-        return parentInjector;
-    }
+        if (options.Features.CurrentTimestampProvider)
+        {
+            services.TryAddSingleton<ICurrentTimestampProvider, CurrentTimestampProvider>();
+        }
 
-    public static JIL.DependencyInjector AddUtilities(this JIL.DependencyInjector parentInjector)
-    {
-        return parentInjector.AddUtilities(injector => injector
-            .AddCurrentTimestampProvider()
-            .AddRandomStringGenerator()
-        );
-    }
+        if (options.Features.RandomStringGenerator)
+        {
+            services.TryAddSingleton<IRandomStringGenerator, RandomStringGenerator>();
+        }
 
-    public static DependencyInjector AddCurrentTimestampProvider(this DependencyInjector injector)
-    {
-        injector.Services.AddSingleton<ICurrentTimestampProvider, CurrentTimestampProvider>();
-        return injector;
-    }
-
-    public static DependencyInjector AddRandomStringGenerator(this DependencyInjector injector)
-    {
-        injector.Services.AddSingleton<IRandomStringGenerator, RandomStringGenerator>();
-        return injector;
+        return services;
     }
 }

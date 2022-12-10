@@ -1,32 +1,33 @@
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace JIL.WebAPI;
 
-public sealed class DependencyInjector : DependencyInjectorBase, IDependencyInjector
+public sealed record DependencyOptions
 {
-    DependencyInjector(IServiceCollection services) : base(services) { }
+    internal DependencyOptions() { }
 
-    static DependencyInjector? _instance;
-    public static DependencyInjector GetInstance(IServiceCollection services) => _instance ??= new(services);
+    public FeaturesObj Features { get; } = new();
+
+    public sealed record FeaturesObj
+    {
+        internal FeaturesObj() { }
+
+        public bool ApiResponseTypeRegistryKeyProvider { get; set; } = true; 
+    }
 }
 
 public static class DependencyExtensions
 {
-    public static IServiceCollection AddJILWebAPI(this IServiceCollection services, InjectDependencies<DependencyInjector> injectDependencies)
+    public static IServiceCollection AddJILWebAPI(this IServiceCollection services, Action<DependencyOptions>? configure = null)
     {
-        var injector = DependencyInjector.GetInstance(services);
-        injectDependencies(injector);
+        var options = new DependencyOptions();
+        configure?.Invoke(options);
+
+        if (options.Features.ApiResponseTypeRegistryKeyProvider)
+        {
+            services.TryAddSingleton<IApiResponseTypeRegistryKeyProvider, ApiResponseTypeRegistryKeyProvider>();
+        }
+
         return services;
-    }
-
-    public static IServiceCollection AddJILWebAPI(this IServiceCollection services)
-    {
-        return services.AddJILWebAPI(injector => injector
-            .AddApiResponseTypeRegistryKeyProvider()
-        );
-    }
-
-    public static DependencyInjector AddApiResponseTypeRegistryKeyProvider(this DependencyInjector injector)
-    {
-        injector.Services.AddSingleton<IApiResponseTypeRegistryKeyProvider, ApiResponseTypeRegistryKeyProvider>();
-        return injector;
     }
 }
