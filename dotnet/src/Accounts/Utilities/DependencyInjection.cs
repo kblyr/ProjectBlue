@@ -1,34 +1,31 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JIL.Accounts.Utilities;
 
-public sealed class DependencyInjector : DependencyInjectorBase, IDependencyInjector
+public sealed record DependencyOptions
 {
-    DependencyInjector(IServiceCollection services) : base(services) { }
+    internal DependencyOptions() { }
 
-    static DependencyInjector? _instance;
-    public static DependencyInjector GetInstance(Accounts.DependencyInjector parent) => _instance ??= new(parent.Services);
+    public FeaturesObj Features { get; } = new();
+
+    public sealed record FeaturesObj
+    {
+        internal FeaturesObj() { }
+
+        public bool UserFullNameBuilder { get; set; } = true;
+    }
 }
 
-public static class DependencyExtensions
+static class DependencyExtensions
 {
-    public static Accounts.DependencyInjector AddUtilities(this Accounts.DependencyInjector parentInjector, InjectDependencies<DependencyInjector> injectDependencies)
+    public static IServiceCollection AddUtilities(this IServiceCollection services, DependencyOptions options)
     {
-        var injector = DependencyInjector.GetInstance(parentInjector);
-        injectDependencies(injector);
-        return parentInjector;
-    }
+        if (options.Features.UserFullNameBuilder)
+        {
+            services.TryAddSingleton<IUserFullNameBuilder, UserFullNameBuilder>();
+        }
 
-    public static Accounts.DependencyInjector AddUtilities(this Accounts.DependencyInjector parentInjector)
-    {
-        return parentInjector.AddUtilities(injector => injector
-            .AddUserFullNameBuilder()
-        );
-    }
-
-    public static DependencyInjector AddUserFullNameBuilder(this DependencyInjector injector)
-    {
-        injector.Services.AddSingleton<IUserFullNameBuilder, UserFullNameBuilder>();
-        return injector;
+        return services;
     }
 }

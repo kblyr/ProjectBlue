@@ -5,12 +5,11 @@ namespace JIL.Accounts.Lookups;
 
 public static class DependencyExtensions
 {
-    public static Accounts.DependencyInjector ConfigureLookups(this Accounts.DependencyInjector injector, IConfiguration configuration)
+    public static IServiceCollection ConfigureAccountsLookups(this IServiceCollection services, IConfiguration configuration)
     {
-        injector.Services
+        return services
             .Configure<PermissionsLookup>(configuration.GetSection(PermissionsLookup.CONFIGKEY))
             .Configure<RolesLookup>(configuration.GetSection(RolesLookup.CONFIGKEY))
             .Configure<UserStatusesLookup>(configuration.GetSection(UserStatusesLookup.CONFIGKEY));
-        return injector;
     }
 }
