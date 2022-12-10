@@ -1,36 +1,33 @@
 using JIL.Auditing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JIL.WebAPI.Server.Auditing;
 
-public sealed class DependencyInjector : DependencyInjectorBase, IDependencyInjector
+public sealed record DependencyOptions
 {
-    DependencyInjector(IServiceCollection services) : base(services) { }
+    internal DependencyOptions() { }
 
-    static DependencyInjector? _instance;
-    public static DependencyInjector GetInstance(Server.DependencyInjector parent) => _instance ??= new(parent.Services);
+    public FeaturesObj Features { get; } = new();
+
+    public sealed record FeaturesObj
+    {
+        internal FeaturesObj() { }
+
+        public bool CurrentAuditInfoProvider { get; set; } = true;
+    }
 }
 
-public static class DependencyExtensions
+static class DependencyExtensions
 {
-    public static Server.DependencyInjector AddAuditing(this Server.DependencyInjector parentInjector, InjectDependencies<DependencyInjector> injectDependencies)
+    public static IServiceCollection AddAuditing(this IServiceCollection services, DependencyOptions options)
     {
-        var injector = DependencyInjector.GetInstance(parentInjector);
-        injectDependencies(injector);
-        return parentInjector;
-    }
+        if (options.Features.CurrentAuditInfoProvider)
+        {
+            services.AddHttpContextAccessor();
+            services.TryAddScoped<ICurrentAuditInfoProvider, CurrentAuditInfoProvider>();
+        }
 
-    public static Server.DependencyInjector AddAuditing(this Server.DependencyInjector parentInjector)
-    {
-        return parentInjector.AddAuditing(injector => injector
-            .AddCurrentAuditInfoProvider()
-        );
-    }
-
-    public static DependencyInjector AddCurrentAuditInfoProvider(this DependencyInjector injector)
-    {
-        injector.Services.AddHttpContextAccessor();
-        injector.Services.AddScoped<ICurrentAuditInfoProvider, CurrentAuditInfoProvider>();
-        return injector;
+        return services;
     }
 }

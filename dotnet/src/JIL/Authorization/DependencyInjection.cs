@@ -1,39 +1,36 @@
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace JIL.Authorization;
 
-public sealed class DependencyInjector : DependencyInjectorBase, IDependencyInjector
+public sealed record DependencyOptions
 {
-    DependencyInjector(IServiceCollection services) : base(services) { }
+    internal DependencyOptions() { }
 
-    static DependencyInjector? _instance;
-    public static DependencyInjector GetInstance(JIL.DependencyInjector parent) => _instance ??= new(parent.Services);
+    public FeaturesObj Features { get; } = new();
+
+    public sealed record FeaturesObj
+    {
+        internal FeaturesObj() { }
+
+        public bool RoleVerifier { get; set; } = true;
+        public bool PermissionVerifier { get; set; } = true;
+    }
 }
 
-public static class DependencyExtensions
+static class DependencyExtensions
 {
-    public static JIL.DependencyInjector AddAuthorization(this JIL.DependencyInjector parentInjector, InjectDependencies<DependencyInjector> injectDependencies)
+    public static IServiceCollection AddAuthorization(this IServiceCollection services, DependencyOptions options)
     {
-        var injector = DependencyInjector.GetInstance(parentInjector);
-        injectDependencies(injector);
-        return parentInjector;
-    }
+        if (options.Features.RoleVerifier)
+        {
+            services.TryAddSingleton<IRoleVerifier, RoleVerifier>();
+        }
 
-    public static JIL.DependencyInjector AddAuthorization(this JIL.DependencyInjector parentInjector)
-    {
-        return parentInjector.AddAuthorization(injector => injector
-            .AddRoleVerifier()
-            .AddPermissionVerifier()
-        );
-    }
+        if (options.Features.PermissionVerifier)
+        {
+            services.TryAddSingleton<IPermissionVerifier, PermissionVerifier>();
+        }
 
-    public static DependencyInjector AddRoleVerifier(this DependencyInjector injector)
-    {
-        injector.Services.AddSingleton<IRoleVerifier, RoleVerifier>();
-        return injector;
-    }
-
-    public static DependencyInjector AddPermissionVerifier(this DependencyInjector injector)
-    {
-        injector.Services.AddSingleton<IPermissionVerifier, PermissionVerifier>();
-        return injector;
+        return services;
     }
 }

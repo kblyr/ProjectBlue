@@ -1,67 +1,65 @@
 using System.Reflection;
+using JIL.WebAPI.Server.Auditing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JIL.WebAPI.Server;
 
-public sealed class DependencyInjector : DependencyInjectorBase, IDependencyInjector
-{
-    DependencyInjector(IServiceCollection services) : base(services) { }
-
-    static DependencyInjector? _instance;
-    public static DependencyInjector GetInstance(IServiceCollection services) => _instance ??= new(services);
-}
-
 public sealed record DependencyOptions
 {
-    DependencyOptions() { }
+    internal DependencyOptions() { }
     
-    Assembly[] _responseTypeMapAssemblies = Array.Empty<Assembly>();
-    public Assembly[] ResponseTypeMapAssemblies 
-    {
-        get => _responseTypeMapAssemblies;
-        set => _responseTypeMapAssemblies = value is null ? Array.Empty<Assembly>() : value;
-    }
+    public FeaturesObj Features { get; } = new();
+    public Auditing.DependencyOptions? Auditing { get; set; } = new();
 
-    internal static DependencyOptions CreateInstance() => new();
+    public sealed record FeaturesObj
+    {
+        internal FeaturesObj() { }
+
+        public bool ApiMediator { get; set; } = true;
+        public bool ResponseMapper { get; set; } = true;
+        public ResponseTypeMapRegistryObj? ResponseTypeMapRegistry { get; set; } = new();
+
+        public sealed record ResponseTypeMapRegistryObj
+        {
+            Assembly[] _assemblies = Array.Empty<Assembly>();
+            public Assembly[] Assemblies 
+            {
+                get => _assemblies;
+                set => _assemblies = value is null ? Array.Empty<Assembly>() : value;
+            }
+        }
+    }
 }
 
 public static class DependencyExtensions
 {
-    public static IServiceCollection AddJILWebAPIServer(this IServiceCollection services, InjectDependencies<DependencyInjector> injectDependencies)
-    {
-        var injector = DependencyInjector.GetInstance(services);
-        injectDependencies(injector);
-        return services;
-    }
-
     public static IServiceCollection AddJILWebAPIServer(this IServiceCollection services, Action<DependencyOptions>? configure = null)
     {
-        var options = DependencyOptions.CreateInstance();
+        var options = new DependencyOptions();
         configure?.Invoke(options);
 
-        return services.AddJILWebAPIServer(injector => injector
-            .AddApiMediator()
-            .AddResponseMapper()
-            .AddResponseTypeMapRegistry(options.ResponseTypeMapAssemblies)
-        );
-    }
+        if (options.Features.ApiMediator)
+        {
+            services.TryAddTransient<IApiMediator, ApiMediator>();
+        }
 
-    public static DependencyInjector AddApiMediator(this DependencyInjector injector)
-    {
-        injector.Services.AddTransient<IApiMediator, ApiMediator>();
-        return injector;
-    }
+        if (options.Features.ResponseMapper)
+        {
+            services.TryAddTransient<IResponseMapper, ResponseMapper>();
+        }
 
-    public static DependencyInjector AddResponseMapper(this DependencyInjector injector)
-    {
-        injector.Services.AddTransient<IResponseMapper, ResponseMapper>();
-        return injector;
-    }
+        if (options.Features.ResponseTypeMapRegistry is not null)
+        {
+            services.TryAddSingleton<IResponseTypeMapRegistry, ResponseTypeMapRegistry>();
+            services.TryAddSingleton<ResponseTypeMapAssemblyScanner>(sp => new ResponseTypeMapAssemblyScanner(options.Features.ResponseTypeMapRegistry.Assemblies));
+        }
 
-    public static DependencyInjector AddResponseTypeMapRegistry(this DependencyInjector injector, Assembly[] assemblies)
-    {
-        injector.Services.AddSingleton<IResponseTypeMapRegistry, ResponseTypeMapRegistry>();
-        injector.Services.AddSingleton<ResponseTypeMapAssemblyScanner>(sp => new ResponseTypeMapAssemblyScanner(assemblies));
-        return injector;
+        if (options.Auditing is not null)
+        {
+            services.AddAuditing(options.Auditing);
+        }
+
+        return services;
     }
 }
