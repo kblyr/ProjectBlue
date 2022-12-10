@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Accounts.WebAPI.Server\JIL.Accounts.WebAPI.Server.csproj" />
     <ProjectReference Include="..\Accounts.EFCore\JIL.Accounts.EFCore.csproj" />
+    <ProjectReference Include="..\JIL\JIL.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,8 @@
 using FastEndpoints;
 using JIL;
+using JIL.Accounts;
+using JIL.WebAPI;
+using JIL.WebAPI.Server;
 using MediatR;
 
 var endpointAssemblies = new[]
@@ -18,12 +21,20 @@ var mappingAssemblies = new[]
     JIL.Accounts.WebAPI.Server.AssemblyMarker.Assembly
 };
 
+var responseTypeMapAssemblies = new[]
+{
+    JIL.Accounts.WebAPI.Server.AssemblyMarker.Assembly
+};
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddFastEndpoints(options => options.Assemblies = endpointAssemblies)
     .AddMediatR(requestHandlerAssemblies)
-    .AddMapster(mappingAssemblies);
+    .AddMapster(mappingAssemblies)
+    .AddJIL()
+    .AddJILWebAPI()
+    .AddJILWebAPIServer(options => options.ResponseTypeMapAssemblies = responseTypeMapAssemblies);
 
 var app = builder.Build();
 
