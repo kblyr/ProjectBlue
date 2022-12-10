@@ -3,12 +3,23 @@ using JIL.Utilities;
 
 namespace JIL;
 
-public sealed record DependencyOptions
+public abstract record DependencyOptionsBase
+{
+    public bool IsIncluded { get; private set; } = true;
+    public bool IsIgnored  => !IsIncluded;
+
+    public void Ignore()
+    {
+        IsIncluded = false;
+    }
+}
+
+public sealed record DependencyOptions : DependencyOptionsBase
 {
     internal DependencyOptions() { }
     
-    public Authorization.DependencyOptions? Authorization { get; set; } = new();
-    public Utilities.DependencyOptions? Utilities { get; set; } = new();
+    public Authorization.DependencyOptions Authorization { get; } = new();
+    public Utilities.DependencyOptions Utilities { get; } = new();
 }
 
 public static class DependencyExtensions
@@ -18,16 +29,13 @@ public static class DependencyExtensions
         var options = new DependencyOptions();
         configure?.Invoke(options);
 
-        if (options.Authorization is not null)
+        if (options.IsIgnored)
         {
-            services.AddAuthorization(options.Authorization);
+            return services;
         }
 
-        if (options.Utilities is not null)
-        {
-            services.AddUtilities(options.Utilities);
-        }
-
-        return services;
+        return services
+            .AddAuthorization(options.Authorization)
+            .AddUtilities(options.Utilities);
     }
 }

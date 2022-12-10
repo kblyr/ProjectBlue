@@ -5,12 +5,12 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JIL.WebAPI.Server;
 
-public sealed record DependencyOptions
+public sealed record DependencyOptions : DependencyOptionsBase
 {
     internal DependencyOptions() { }
     
     public FeaturesObj Features { get; } = new();
-    public Auditing.DependencyOptions? Auditing { get; set; } = new();
+    public Auditing.DependencyOptions Auditing { get; } = new();
 
     public sealed record FeaturesObj
     {
@@ -18,9 +18,9 @@ public sealed record DependencyOptions
 
         public bool ApiMediator { get; set; } = true;
         public bool ResponseMapper { get; set; } = true;
-        public ResponseTypeMapRegistryObj? ResponseTypeMapRegistry { get; set; } = new();
+        public ResponseTypeMapRegistryObj ResponseTypeMapRegistry { get; } = new();
 
-        public sealed record ResponseTypeMapRegistryObj
+        public sealed record ResponseTypeMapRegistryObj : DependencyOptionsBase
         {
             Assembly[] _assemblies = Array.Empty<Assembly>();
             public Assembly[] Assemblies 
@@ -39,6 +39,11 @@ public static class DependencyExtensions
         var options = new DependencyOptions();
         configure?.Invoke(options);
 
+        if (options.IsIgnored)
+        {
+            return services;
+        }
+
         if (options.Features.ApiMediator)
         {
             services.TryAddTransient<IApiMediator, ApiMediator>();
@@ -49,17 +54,13 @@ public static class DependencyExtensions
             services.TryAddTransient<IResponseMapper, ResponseMapper>();
         }
 
-        if (options.Features.ResponseTypeMapRegistry is not null)
+        if (options.Features.ResponseTypeMapRegistry.IsIncluded)
         {
             services.TryAddSingleton<IResponseTypeMapRegistry, ResponseTypeMapRegistry>();
             services.TryAddSingleton<ResponseTypeMapAssemblyScanner>(sp => new ResponseTypeMapAssemblyScanner(options.Features.ResponseTypeMapRegistry.Assemblies));
         }
 
-        if (options.Auditing is not null)
-        {
-            services.AddAuditing(options.Auditing);
-        }
-
-        return services;
+        return services
+            .AddAuditing(options.Auditing);
     }
 }

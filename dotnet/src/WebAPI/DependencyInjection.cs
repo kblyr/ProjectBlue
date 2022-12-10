@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JIL.WebAPI;
 
-public sealed record DependencyOptions
+public sealed record DependencyOptions : DependencyOptionsBase
 {
     internal DependencyOptions() { }
 
@@ -22,6 +22,11 @@ public static class DependencyExtensions
     {
         var options = new DependencyOptions();
         configure?.Invoke(options);
+
+        if (options.IsIgnored)
+        {
+            return services;
+        }
 
         if (options.Features.ApiResponseTypeRegistryKeyProvider)
         {

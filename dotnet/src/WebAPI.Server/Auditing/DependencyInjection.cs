@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JIL.WebAPI.Server.Auditing;
 
-public sealed record DependencyOptions
+public sealed record DependencyOptions : DependencyOptionsBase
 {
     internal DependencyOptions() { }
 
@@ -22,6 +22,11 @@ static class DependencyExtensions
 {
     public static IServiceCollection AddAuditing(this IServiceCollection services, DependencyOptions options)
     {
+        if (options.IsIgnored)
+        {
+            return services;
+        }
+
         if (options.Features.CurrentAuditInfoProvider)
         {
             services.AddHttpContextAccessor();

@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JIL.Authorization;
 
-public sealed record DependencyOptions
+public sealed record DependencyOptions : DependencyOptionsBase
 {
     internal DependencyOptions() { }
 
@@ -21,6 +21,11 @@ static class DependencyExtensions
 {
     public static IServiceCollection AddAuthorization(this IServiceCollection services, DependencyOptions options)
     {
+        if (options.IsIgnored)
+        {
+            return services;
+        }
+
         if (options.Features.RoleVerifier)
         {
             services.TryAddSingleton<IRoleVerifier, RoleVerifier>();
