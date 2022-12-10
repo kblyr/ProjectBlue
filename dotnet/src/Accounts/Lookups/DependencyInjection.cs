@@ -5,7 +5,7 @@ namespace JIL.Accounts.Lookups;
 
 public static class DependencyExtensions
 {
-    public static IServiceCollection ConfigureAccountsLookups(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddJILAccountsLookups(this IServiceCollection services, IConfiguration configuration)
     {
         return services
             .Configure<PermissionsLookup>(configuration.GetSection(PermissionsLookup.CONFIGKEY))

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JIL.Accounts.Utilities;
 
-public sealed record DependencyOptions
+public sealed record DependencyOptions : DependencyOptionsBase
 {
     internal DependencyOptions() { }
 
@@ -21,6 +21,11 @@ static class DependencyExtensions
 {
     public static IServiceCollection AddUtilities(this IServiceCollection services, DependencyOptions options)
     {
+        if (options.IsIgnored)
+        {
+            return services;
+        }
+
         if (options.Features.UserFullNameBuilder)
         {
             services.TryAddSingleton<IUserFullNameBuilder, UserFullNameBuilder>();

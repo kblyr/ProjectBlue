@@ -1,6 +1,7 @@
 using FastEndpoints;
 using JIL;
 using JIL.Accounts;
+using JIL.Accounts.Lookups;
 using JIL.WebAPI;
 using JIL.WebAPI.Server;
 using MediatR;
@@ -34,18 +35,12 @@ builder.Services
     .AddMapster(mappingAssemblies)
     .AddJIL()
     .AddJILWebAPI()
-    .AddJILWebAPIServer(options => {
-        options.Features.ResponseTypeMapRegistry = new()
-        {
-            Assemblies = responseTypeMapAssemblies
-        };
-    })
+    .AddJILWebAPIServer(options => options.Features.ResponseTypeMapRegistry.Assemblies = responseTypeMapAssemblies)
     .AddJILAccounts(options => {
-        options.Security = new()
-        {
-            
-        };
-    });
+        options.Security.UserPasswordF2BEncryption.PemFilePath = builder.Configuration["JIL:Accounts:Security:UserPasswordF2BEncryption:PemFilePath"];
+        options.Security.UserPasswordF2BDecryption.PemFilePath = builder.Configuration["JIL:Accounts:Security:UserPasswordF2BDecryption:PemFilePath"];
+    })
+    .AddJILAccountsLookups(builder.Configuration);
 
 var app = builder.Build();
 

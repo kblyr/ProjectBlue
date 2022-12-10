@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace JIL.Accounts.Security;
 
-public sealed record DependencyOptions
+public sealed record DependencyOptions : DependencyOptionsBase
 {
     public FeaturesObj Features { get; } = new();
-    public UserPasswordF2BEncryptionObj? UserPasswordF2BEncryption { get; set; }
-    public UserPasswordF2BDecryptionObj? UserPasswordF2BDecryption { get; set; }
+    public UserPasswordF2BEncryptionObj UserPasswordF2BEncryption { get; } = new();
+    public UserPasswordF2BDecryptionObj UserPasswordF2BDecryption { get; } = new();
 
     public sealed record FeaturesObj
     {
@@ -17,14 +17,18 @@ public sealed record DependencyOptions
         public bool UserPasswordF2BHashAlgorithm { get; set; } = true;
     }
 
-    public sealed record UserPasswordF2BEncryptionObj
+    public sealed record UserPasswordF2BEncryptionObj : DependencyOptionsBase
     {
-        public string? PemFilePath { get; init; }
+        internal UserPasswordF2BEncryptionObj() { }
+
+        public string? PemFilePath { get; set; }
     }
 
-    public sealed record UserPasswordF2BDecryptionObj
+    public sealed record UserPasswordF2BDecryptionObj : DependencyOptionsBase
     {
-        public string? PemFilePath { get; init; }
+        internal UserPasswordF2BDecryptionObj() { }
+
+        public string? PemFilePath { get; set; }
     }
 }
 
@@ -32,6 +36,11 @@ static class DependencyExtensions
 {
     public static IServiceCollection AddSecurity(this IServiceCollection services, DependencyOptions options)
     {
+        if (options.IsIgnored)
+        {
+            return services;
+        }
+
         if (options.Features.UserPasswordHashAlgorithm)
         {
             services.TryAddSingleton<IUserPasswordHashAlgorithm, UserPasswordHashAlgorithm>();
@@ -42,7 +51,7 @@ static class DependencyExtensions
             services.TryAddSingleton<IUserPasswordF2BHashAlgorithm, UserPasswordF2BHashAlgorithm>();
         }
 
-        if (options.UserPasswordF2BEncryption is not null)
+        if (options.UserPasswordF2BEncryption.IsIncluded)
         {
             services.TryAddSingleton<IUserPasswordF2BEncryptor, UserPasswordF2BEncryptor>();
 
@@ -52,7 +61,7 @@ static class DependencyExtensions
             }
         }
 
-        if (options.UserPasswordF2BDecryption is not null)
+        if (options.UserPasswordF2BDecryption.IsIncluded)
         {
             services.TryAddSingleton<IUserPasswordF2BDecryptor, UserPasswordF2BDecryptor>();
 

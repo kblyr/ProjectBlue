@@ -1,16 +1,15 @@
 using JIL.Accounts.Security;
 using JIL.Accounts.Utilities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JIL.Accounts;
 
-public sealed record DependencyOptions
+public sealed record DependencyOptions : DependencyOptionsBase
 {
     internal DependencyOptions() { }
 
-    public Security.DependencyOptions? Security { get; set; } = new();
-    public Utilities.DependencyOptions? Utilities { get; set; } = new();
+    public Security.DependencyOptions Security { get; } = new();
+    public Utilities.DependencyOptions Utilities { get; } = new();
 }
 
 public static class DependencyExtensions
@@ -20,16 +19,13 @@ public static class DependencyExtensions
         var options = new DependencyOptions();
         configure?.Invoke(options);
 
-        if (options.Security is not null)
+        if (options.IsIgnored)
         {
-            services.AddSecurity(options.Security);
+            return services;
         }
 
-        if (options.Utilities is not null)
-        {
-            services.AddUtilities(options.Utilities);
-        }
-
-        return services;
+        return services
+            .AddSecurity(options.Security)
+            .AddUtilities(options.Utilities);
     }
 }
