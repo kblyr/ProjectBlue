@@ -2,9 +2,11 @@ using FastEndpoints;
 using JIL;
 using JIL.Accounts;
 using JIL.Accounts.Lookups;
+using JIL.EFCore;
 using JIL.WebAPI;
 using JIL.WebAPI.Server;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 var endpointAssemblies = new[]
 {
@@ -37,7 +39,8 @@ builder.Services
     .AddJILWebAPI()
     .AddJILWebAPIServer(options => options.Features.ResponseTypeMapRegistry.Assemblies = responseTypeMapAssemblies)
     .AddJILAccounts(options => options.Security.UserPasswordF2BDecryption.PemFilePath = builder.Configuration["JIL:Accounts:Security:UserPasswordF2BDecryption:PemFilePath"])
-    .AddJILAccountsLookups(builder.Configuration);
+    .AddJILAccountsLookups(builder.Configuration)
+    .AddDbContextFactory<AccountsDbContext>(JIL.Accounts.EFCore.PostgreSQL.AssemblyMarker.Assembly, options => options.UseNpgsql(builder.Configuration["JIL:Accounts:ConnectionStrings:PostgreSQL"]));
 
 var app = builder.Build();
 
