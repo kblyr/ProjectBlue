@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Accounts.EFCore\JIL.Accounts.EFCore.csproj" />
     <ProjectReference Include="..\JIL\JIL.csproj" />
     <ProjectReference Include="..\Accounts.EFCore.PostgreSQL\JIL.Accounts.EFCore.PostgreSQL.csproj" />
+    <ProjectReference Include="..\EFCore.PostgreSQL\JIL.EFCore.PostgreSQL.csproj" />
   </ItemGroup>
 
 </Project>
