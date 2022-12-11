@@ -9,6 +9,11 @@
   <ItemGroup>
     <PackageReference Include="MassTransit" Version="8.0.8" />
     <PackageReference Include="MediatR" Version="11.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JIL\JIL.csproj" />
   </ItemGroup>
 
 </Project>
