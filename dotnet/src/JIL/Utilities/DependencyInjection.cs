@@ -12,8 +12,16 @@ public sealed record DependencyOptions : DependencyOptionsBase
     {
         internal FeaturesObj() { }
 
+        public CurrentDomainProviderObj CurrentDomainProvider { get; } = new();
         public bool CurrentTimestampProvider { get; set; } = true;
         public bool RandomStringGenerator { get; set; } = true;
+
+        public sealed record CurrentDomainProviderObj : DependencyOptionsBase
+        {
+            internal CurrentDomainProviderObj() { }
+
+            public string? Current { get; set; }
+        }
     }
 }
 
@@ -24,6 +32,11 @@ static class DependencyExtensions
         if (options.IsIgnored)
         {
             return services;
+        }
+
+        if (options.Features.CurrentDomainProvider.IsIncluded)
+        {
+            services.TryAddSingleton<ICurrentDomainProvider>(sp => new CurrentDomainProvider(options.Features.CurrentDomainProvider.Current ?? throw new Exception("Current Domain is unspecified")));
         }
 
         if (options.Features.CurrentTimestampProvider)
