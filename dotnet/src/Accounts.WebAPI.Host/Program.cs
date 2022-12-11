@@ -36,10 +36,7 @@ builder.Services
     .AddJIL()
     .AddJILWebAPI()
     .AddJILWebAPIServer(options => options.Features.ResponseTypeMapRegistry.Assemblies = responseTypeMapAssemblies)
-    .AddJILAccounts(options => {
-        options.Security.UserPasswordF2BEncryption.PemFilePath = builder.Configuration["JIL:Accounts:Security:UserPasswordF2BEncryption:PemFilePath"];
-        options.Security.UserPasswordF2BDecryption.PemFilePath = builder.Configuration["JIL:Accounts:Security:UserPasswordF2BDecryption:PemFilePath"];
-    })
+    .AddJILAccounts(options => options.Security.UserPasswordF2BDecryption.PemFilePath = builder.Configuration["JIL:Accounts:Security:UserPasswordF2BDecryption:PemFilePath"])
     .AddJILAccountsLookups(builder.Configuration);
 
 var app = builder.Build();
