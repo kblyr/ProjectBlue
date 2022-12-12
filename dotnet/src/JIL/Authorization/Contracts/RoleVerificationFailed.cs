@@ -1,4 +1,4 @@
-namespace JIL.Contracts;
+namespace JIL.Authorization.Contracts;
 
 public sealed record RoleVerificationFailedError : IErrorResponse
 {

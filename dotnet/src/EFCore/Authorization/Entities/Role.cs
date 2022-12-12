@@ -20,5 +20,5 @@ public record UserRole
     public int? DeletedById { get; set; }
     public DateTimeOffset? DeletedOn { get; set; }
 
-    public required Role Role { get; set; }
+    public Role? Role { get; set; }
 }

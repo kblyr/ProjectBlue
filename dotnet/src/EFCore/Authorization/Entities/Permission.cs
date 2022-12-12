@@ -20,5 +20,5 @@ public record UserPermission
     public int? DeletedById { get; set; }
     public DateTimeOffset? DeletedOn { get; set; }
 
-    public required Permission Permission { get; set; }
+    public Permission? Permission { get; set; }
 }
