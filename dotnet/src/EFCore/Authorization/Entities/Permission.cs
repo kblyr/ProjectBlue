@@ -5,7 +5,7 @@ public record Permission
     public int Id { get; set; }
     public required string Name { get; set; }
 
-    public required IEnumerable<UserPermission> UserPermissions { get; set; }
+    public IEnumerable<UserPermission>? UserPermissions { get; set; }
 }
 
 public record UserPermission

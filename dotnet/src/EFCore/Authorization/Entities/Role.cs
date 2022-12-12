@@ -5,7 +5,7 @@ public record Role
     public int Id { get; set; }
     public required string Name { get; set; }
 
-    public required IEnumerable<UserRole> UserRoles { get; set; }
+    public IEnumerable<UserRole>? UserRoles { get; set; }
 }
 
 public record UserRole
