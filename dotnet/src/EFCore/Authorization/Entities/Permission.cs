@@ -5,7 +5,7 @@ public record Permission
     public int Id { get; set; }
     public required string Name { get; set; }
 
-    public required IEnumerable<UserPermission> UserPermissions { get; set; }
+    public IEnumerable<UserPermission>? UserPermissions { get; set; }
 }
 
 public record UserPermission
@@ -20,5 +20,5 @@ public record UserPermission
     public int? DeletedById { get; set; }
     public DateTimeOffset? DeletedOn { get; set; }
 
-    public required Permission Permission { get; set; }
+    public Permission? Permission { get; set; }
 }

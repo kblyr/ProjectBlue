@@ -5,7 +5,7 @@ public record Role
     public int Id { get; set; }
     public required string Name { get; set; }
 
-    public required IEnumerable<UserRole> UserRoles { get; set; }
+    public IEnumerable<UserRole>? UserRoles { get; set; }
 }
 
 public record UserRole
@@ -20,5 +20,5 @@ public record UserRole
     public int? DeletedById { get; set; }
     public DateTimeOffset? DeletedOn { get; set; }
 
-    public required Role Role { get; set; }
+    public Role? Role { get; set; }
 }
