@@ -8,6 +8,6 @@ public sealed record AddUserPermissionCommand : IRequest
     public sealed record Response : IResponse
     {
         public long Id { get; init; }
-        public required LoggedUser AddedBy { get; init; }
+        public required LoggedUserResponse AddedBy { get; init; }
     }
 }
