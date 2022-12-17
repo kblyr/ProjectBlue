@@ -13,11 +13,13 @@ using Microsoft.EntityFrameworkCore;
 
 var endpointAssemblies = new[]
 {
+    JIL.WebAPI.Server.AssemblyMarker.Assembly,
     JIL.Accounts.WebAPI.Server.AssemblyMarker.Assembly
 };
 
 var requestHandlerAssemblies = new[]
 {
+    JIL.EFCore.AssemblyMarker.Assembly,
     JIL.Accounts.EFCore.AssemblyMarker.Assembly
 };
 
