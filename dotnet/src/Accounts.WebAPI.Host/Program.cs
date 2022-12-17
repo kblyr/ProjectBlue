@@ -3,6 +3,8 @@ using JIL;
 using JIL.Accounts;
 using JIL.Accounts.Lookups;
 using JIL.Authorization;
+using JIL.Authorization.Converters;
+using JIL.Converters;
 using JIL.EFCore;
 using JIL.WebAPI;
 using JIL.WebAPI.Server;
@@ -43,7 +45,12 @@ builder.Services
     .AddJILAccounts(options => options.Security.UserPasswordF2BDecryption.PemFilePath = builder.Configuration["JIL:Accounts:Security:UserPasswordF2BDecryption:PemFilePath"])
     .AddJILAccountsLookups(builder.Configuration)
     .AddDbContextFactory<AuthorizationDbContext>(JIL.EFCore.PostgreSQL.AssemblyMarker.Assembly, options => options.UseNpgsql(builder.Configuration["JIL:Authorization:ConnectionStrings:PostgreSQL"]))
-    .AddDbContextFactory<AccountsDbContext>(JIL.Accounts.EFCore.PostgreSQL.AssemblyMarker.Assembly, options => options.UseNpgsql(builder.Configuration["JIL:Accounts:ConnectionStrings:PostgreSQL"]));
+    .AddDbContextFactory<AccountsDbContext>(JIL.Accounts.EFCore.PostgreSQL.AssemblyMarker.Assembly, options => options.UseNpgsql(builder.Configuration["JIL:Accounts:ConnectionStrings:PostgreSQL"]))
+    .AddHashIdConverter<UserIdConverter>()
+    .AddHashIdConverter<RoleIdConverter>()
+    .AddHashIdConverter<UserRoleIdConverter>()
+    .AddHashIdConverter<PermissionIdConverter>()
+    .AddHashIdConverter<UserPermissionIdConverter>();
 
 var app = builder.Build();
 
