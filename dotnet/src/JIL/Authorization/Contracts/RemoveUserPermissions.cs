@@ -8,6 +8,6 @@ public sealed record RemoveUserPermissionsCommand : IRequest
     public sealed record Response : IResponse
     {
         public required IEnumerable<long> Ids { get; init; }
-        public required LoggedUser RemovedBy { get; init; }
+        public required LoggedUserResponse RemovedBy { get; init; }
     }
 }

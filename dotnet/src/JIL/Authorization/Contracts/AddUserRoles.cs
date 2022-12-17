@@ -8,6 +8,6 @@ public sealed record AddUserRolesCommand : IRequest
     public sealed record Response : IResponse
     {
         public required IEnumerable<long> Ids { get; init; }
-        public required LoggedUser AddedBy { get; init; }
+        public required LoggedUserResponse AddedBy { get; init; }
     }
 }

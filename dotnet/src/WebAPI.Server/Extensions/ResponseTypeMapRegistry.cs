@@ -36,4 +36,11 @@ public static class ResponseTypeMapRegistryExtensions
     {
         return registry.Register<TResponse, TApiResponse>(StatusCodes.Status404NotFound);
     }
+
+    public static IResponseTypeMapRegistry RegisterUnauthorized<TResponse, TApiResponse>(this IResponseTypeMapRegistry registry) 
+        where TResponse : IResponse
+        where TApiResponse : IApiResponse
+    {
+        return registry.Register<TResponse, TApiResponse>(StatusCodes.Status401Unauthorized);
+    }
 }

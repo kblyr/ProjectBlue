@@ -14,4 +14,33 @@ public static class IServiceCollectionExtensions
             .AddSingleton(config)
             .AddScoped<MapsterMapper.IMapper, ServiceMapper>();
     }
+
+    public static IServiceCollection AddHashIdConverter<T>(this IServiceCollection services, Action<HashIdConverterOptions>? configure = null)
+    {
+        var options = new HashIdConverterOptions();
+        configure?.Invoke(options);
+
+        if (options.IsIgnored)
+        {
+            return services;
+        }
+
+        var converterType = typeof(T);
+        var converter = Activator.CreateInstance(converterType, options.Salt, options.MinHashLength);
+
+        if (converter is not null)
+        {
+            services.AddSingleton(converterType, sp => converter);
+        }
+
+        return services;
+    }
+}
+
+public sealed record HashIdConverterOptions : DependencyOptionsBase
+{
+    internal HashIdConverterOptions() { }
+
+    public string Salt { get; set; } = "";
+    public int MinHashLength { get; set; } = 4;
 }
