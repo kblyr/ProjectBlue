@@ -6,6 +6,7 @@ sealed class RemoveUserRoleEndpoint : ApiEndpoint<RemoveUserRole.Request, Remove
 {
     public override void Configure()
     {
-        Delete("auth/user-role");
+        Delete("user-role");
+        Group<AuthorizationGroup>();
     }
 }

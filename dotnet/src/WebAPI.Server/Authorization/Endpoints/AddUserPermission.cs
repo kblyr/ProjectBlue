@@ -6,6 +6,7 @@ sealed class AddUserPermissionEndpoint : ApiEndpoint<AddUserPermission.Request, 
 {
     public override void Configure()
     {
-        Post("auth/user-permission");
+        Post("user-permission");
+        Group<AuthorizationGroup>();
     }
 }
