@@ -28,12 +28,12 @@ static class DependencyExtensions
 
         if (options.Features.RoleVerifier)
         {
-            services.TryAddSingleton<IRoleVerifier, RoleVerifier>();
+            services.TryAddScoped<IRoleVerifier, RoleVerifier>();
         }
 
         if (options.Features.PermissionVerifier)
         {
-            services.TryAddSingleton<IPermissionVerifier, PermissionVerifier>();
+            services.TryAddScoped<IPermissionVerifier, PermissionVerifier>();
         }
 
         return services;
