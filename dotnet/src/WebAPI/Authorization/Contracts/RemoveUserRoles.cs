@@ -5,8 +5,8 @@ public static class RemoveUserRoles
     [SchemaId(RequestSchemaIds.RemoveUserRoles)]
     public sealed record Request : IApiRequest
     {
-        public required string UserId { get; init; }
-        public required IEnumerable<string> RoleIds { get; init; }
+        public string UserId { get; init; } = "";
+        public IEnumerable<string> RoleIds { get; init; } = Enumerable.Empty<string>();
     }
 
     [SchemaId(ResponseSchemaIds.RemoveUserRoles)]
