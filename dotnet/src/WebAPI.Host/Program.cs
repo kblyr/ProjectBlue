@@ -53,5 +53,5 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseDefaultExceptionHandler();
 // app.UseAuthorization();
-app.UseFastEndpoints();
+app.UseFastEndpoints(c => c.Errors.UseJILResponseBuilder());
 app.Run();

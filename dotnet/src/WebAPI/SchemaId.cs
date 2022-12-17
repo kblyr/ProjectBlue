@@ -9,4 +9,6 @@ public class SchemaIdAttribute : Attribute
     {
         SchemaId = schemaId;
     }
+
+    public const string ValidationFailure = "res://jil/validation-failure";
 }
