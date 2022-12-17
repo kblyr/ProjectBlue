@@ -39,6 +39,7 @@ var responseTypeMapAssemblies = new[]
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    // .AddAuthentication()
     .AddFastEndpoints(options => options.Assemblies = endpointAssemblies)
     .AddMediatR(requestHandlerAssemblies)
     .AddMapster(mappingAssemblies)
@@ -46,7 +47,10 @@ builder.Services
     .AddJILEFCore()
     .AddJILWebAPI()
     .AddJILWebAPIServer(options => options.Features.ResponseTypeMapRegistry.Assemblies = responseTypeMapAssemblies)
-    .AddJILAccounts(options => options.Security.UserPasswordF2BDecryption.PemFilePath = builder.Configuration["JIL:Accounts:Security:UserPasswordF2BDecryption:PemFilePath"])
+    .AddJILAccounts(options => {
+        options.Security.UserPasswordF2BEncryption.Ignore();
+        options.Security.UserPasswordF2BDecryption.PemFilePath = builder.Configuration["JIL:Accounts:Security:UserPasswordF2BDecryption:PemFilePath"];
+    })
     .AddJILAccountsLookups(builder.Configuration)
     .AddDbContextFactory<AuthorizationDbContext>(JIL.EFCore.PostgreSQL.AssemblyMarker.Assembly, options => options.UseNpgsql(builder.Configuration["JIL:Authorization:ConnectionStrings:PostgreSQL"]))
     .AddDbContextFactory<AccountsDbContext>(JIL.Accounts.EFCore.PostgreSQL.AssemblyMarker.Assembly, options => options.UseNpgsql(builder.Configuration["JIL:Accounts:ConnectionStrings:PostgreSQL"]))
@@ -59,6 +63,6 @@ builder.Services
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
+// app.UseAuthorization();
 app.UseFastEndpoints();
 app.Run();
