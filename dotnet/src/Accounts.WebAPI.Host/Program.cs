@@ -23,12 +23,14 @@ var requestHandlerAssemblies = new[]
 
 var mappingAssemblies = new[]
 {
+    JIL.WebAPI.Server.AssemblyMarker.Assembly,
     JIL.Accounts.AssemblyMarker.Assembly,
     JIL.Accounts.WebAPI.Server.AssemblyMarker.Assembly
 };
 
 var responseTypeMapAssemblies = new[]
 {
+    JIL.WebAPI.Server.AssemblyMarker.Assembly,
     JIL.Accounts.WebAPI.Server.AssemblyMarker.Assembly
 };
 
