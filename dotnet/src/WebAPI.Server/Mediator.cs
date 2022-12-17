@@ -23,31 +23,46 @@ public delegate T MutateRequest<T>(T request);
 
 sealed class ApiMediator : IApiMediator
 {
-    public Task<IResponse> Send<TRequestFrom, TRequestTo>(TRequestFrom requestFrom, CancellationToken cancellationToken = default)
-        where TRequestFrom : IApiRequest
-        where TRequestTo : IRequest
+    readonly MediatR.IMediator _mediator;
+    readonly MapsterMapper.IMapper _mapper;
+    readonly IResponseMapper _responseMapper;
+
+    public ApiMediator(MediatR.IMediator mediator, MapsterMapper.IMapper mapper, IResponseMapper responseMapper)
     {
-        throw new NotImplementedException();
+        _mediator = mediator;
+        _mapper = mapper;
+        _responseMapper = responseMapper;
     }
 
-    public Task<IResponse> Send<TRequestFrom, TRequestTo>(TRequestFrom requestFrom, MutateRequest<TRequestTo> mutateRequest, CancellationToken cancellationToken = default)
+    public async Task<IResponse> Send<TRequestFrom, TRequestTo>(TRequestFrom requestFrom, CancellationToken cancellationToken = default)
         where TRequestFrom : IApiRequest
         where TRequestTo : IRequest
     {
-        throw new NotImplementedException();
+        var requestTo = _mapper.Map<TRequestFrom, TRequestTo>(requestFrom);
+        return await _mediator.Send(requestTo, cancellationToken);
     }
 
-    public Task<IActionResult> SendThenMap<TRequestFrom, TRequestTo>(TRequestFrom requestFrom, CancellationToken cancellationToken = default)
+    public async Task<IResponse> Send<TRequestFrom, TRequestTo>(TRequestFrom requestFrom, MutateRequest<TRequestTo> mutateRequest, CancellationToken cancellationToken = default)
         where TRequestFrom : IApiRequest
         where TRequestTo : IRequest
     {
-        throw new NotImplementedException();
+        var requestTo = mutateRequest(_mapper.Map<TRequestFrom, TRequestTo>(requestFrom));
+        return await _mediator.Send(requestTo, cancellationToken);
     }
 
-    public Task<IActionResult> SendThenMap<TRequestFrom, TRequestTo>(TRequestFrom requestFrom, MutateRequest<TRequestTo> mutateRequest, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> SendThenMap<TRequestFrom, TRequestTo>(TRequestFrom requestFrom, CancellationToken cancellationToken = default)
         where TRequestFrom : IApiRequest
         where TRequestTo : IRequest
     {
-        throw new NotImplementedException();
+        var response = await Send<TRequestFrom, TRequestTo>(requestFrom, cancellationToken);
+        return _responseMapper.Map(response);
+    }
+
+    public async Task<IActionResult> SendThenMap<TRequestFrom, TRequestTo>(TRequestFrom requestFrom, MutateRequest<TRequestTo> mutateRequest, CancellationToken cancellationToken = default)
+        where TRequestFrom : IApiRequest
+        where TRequestTo : IRequest
+    {
+        var response = await Send<TRequestFrom, TRequestTo>(requestFrom, mutateRequest, cancellationToken);
+        return _responseMapper.Map(response);
     }
 }
