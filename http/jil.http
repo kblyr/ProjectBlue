@@ -1,0 +1,7 @@
+POST http://localhost:5096/auth/user-permission HTTP/1.1
+Content-Type: application/json
+
+{
+    "userId": "ASD",
+    "permissionId": "ASD"
+}

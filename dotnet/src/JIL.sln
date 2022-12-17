@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL.WebAPI.Server", "WebAPI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL.EFCore.PostgreSQL", "EFCore.PostgreSQL\JIL.EFCore.PostgreSQL.csproj", "{B7F468F7-C2DD-4EB8-9230-BC4868F1837F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JIL.WebAPI.Host", "WebAPI.Host\JIL.WebAPI.Host.csproj", "{ABB78863-A140-4F21-8337-DA59C02A00F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,9 @@ Global
 		{B7F468F7-C2DD-4EB8-9230-BC4868F1837F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7F468F7-C2DD-4EB8-9230-BC4868F1837F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7F468F7-C2DD-4EB8-9230-BC4868F1837F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABB78863-A140-4F21-8337-DA59C02A00F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABB78863-A140-4F21-8337-DA59C02A00F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABB78863-A140-4F21-8337-DA59C02A00F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABB78863-A140-4F21-8337-DA59C02A00F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
