@@ -5,8 +5,8 @@ public static class RemoveUserPermission
     [SchemaId(RequestSchemaIds.RemoveUserPermission)]
     public sealed record Request : IApiRequest
     {
-        public required string UserId { get; init; }
-        public required string PermissionId { get; init; }
+        public string UserId { get; init; } = "";
+        public string PermissionId { get; init; } = "";
     }
 
     [SchemaId(ResponseSchemaIds.RemoveUserPermission)]

@@ -5,8 +5,8 @@ public static class AddUserRole
     [SchemaId(RequestSchemaIds.AddUserRole)]
     public sealed record Request : IApiRequest
     {
-        public required string UserId { get; init; }
-        public required string RoleId { get; init; }
+        public string UserId { get; init; } = "";
+        public string RoleId { get; init; } = "";
     }
 
     [SchemaId(ResponseSchemaIds.AddUserRole)]
