@@ -1,0 +1,1 @@
+global using JIL.Accounts.Contracts;
