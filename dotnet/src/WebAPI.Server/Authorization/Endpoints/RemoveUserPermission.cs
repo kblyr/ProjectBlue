@@ -6,6 +6,7 @@ sealed class RemoveUserPermissionEndpoint : ApiEndpoint<RemoveUserPermission.Req
 {
     public override void Configure()
     {
-        Delete("auth/user-permission");
+        Delete("user-permission");
+        Group<AuthorizationGroup>();
     }
 }

@@ -23,7 +23,7 @@ public class ApiEndpoint<TApiRequest> : Endpoint<TApiRequest> where TApiRequest 
         var registryKeyProvider = Resolve<IApiResponseTypeRegistryKeyProvider>();
         var mapper = Resolve<MapsterMapper.IMapper>();
 
-        if (response is null || registry.TryGet(response.GetType(), out ResponseTypeMapDefinition definition))
+        if (response is null || registry.TryGet(response.GetType(), out ResponseTypeMapDefinition definition) == false)
         {
             await SendOkAsync(response ?? new object(), cancellationToken);
             return;

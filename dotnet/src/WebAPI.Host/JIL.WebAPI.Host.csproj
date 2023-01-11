@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>8491a1a5-b315-42a4-8da1-bd35332405f7</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="5.5.0" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="1.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JIL\JIL.csproj" />
+    <ProjectReference Include="..\EFCore.PostgreSQL\JIL.EFCore.PostgreSQL.csproj" />
+    <ProjectReference Include="..\WebAPI.Server\JIL.WebAPI.Server.csproj" />
+    <ProjectReference Include="..\EFCore\JIL.EFCore.csproj" />
+    <ProjectReference Include="..\WebAPI\JIL.WebAPI.csproj" />
+  </ItemGroup>
+
+</Project>

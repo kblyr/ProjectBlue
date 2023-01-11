@@ -6,6 +6,7 @@ sealed class AddUserRolesEndpoint : ApiEndpoint<AddUserRoles.Request, AddUserRol
 {
     public override void Configure()
     {
-        Post("auth/user-role/list");
+        Post("user-role/list");
+        Group<AuthorizationGroup>();
     }
 }
